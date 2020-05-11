@@ -8,11 +8,12 @@ var LogoSchema = new mongoose.Schema({
   fontSizes: Array,
   images: Array,
   imageLocations: [[]],
+  imageDimensions: [[]],
   backgroundColor: String,
   borderColor: String,
   borderWidth: { type: Number, min: 0, max: 100 },
   borderRadius: { type: Number, min: 0, max: 100 },
-  padding: { type: Number, min: 0, max: 100 },
+  dimensions: Array,
   location: Array,
   lastUpdate: { type: Date, default: Date.now },
 });

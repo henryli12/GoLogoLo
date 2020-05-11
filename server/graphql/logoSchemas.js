@@ -35,6 +35,9 @@ var logoType = new GraphQLObjectType({
             imageLocations: {
                 type: new GraphQLList(new GraphQLList(GraphQLInt))
             },
+            imageDimensions: {
+                type: new GraphQLList(new GraphQLList(GraphQLInt))
+            },
             backgroundColor: {
                 type: GraphQLString
             },
@@ -47,8 +50,8 @@ var logoType = new GraphQLObjectType({
             borderRadius: {
                 type: GraphQLInt
             },
-            padding: {
-                type: GraphQLInt
+            dimensions: {
+                type: new GraphQLList(GraphQLInt)
             },
             location: {
                 type: new GraphQLList(GraphQLInt)
@@ -174,6 +177,9 @@ var mutation = new GraphQLObjectType({
                     imageLocations: {
                         type: new GraphQLNonNull(new GraphQLList(new GraphQLList(GraphQLInt)))
                     },
+                    imageDimensions: {
+                        type: new GraphQLNonNull(new GraphQLList(new GraphQLList(GraphQLInt)))
+                    },
                     backgroundColor: {
                         type: new GraphQLNonNull(GraphQLString)
                     },
@@ -186,8 +192,8 @@ var mutation = new GraphQLObjectType({
                     borderRadius: {
                         type: new GraphQLNonNull(GraphQLInt)
                     },
-                    padding: {
-                        type: new GraphQLNonNull(GraphQLInt)
+                    dimensions: {
+                        type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
                     },
                     location: {
                         type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
@@ -227,6 +233,9 @@ var mutation = new GraphQLObjectType({
                     imageLocations: {
                         type: new GraphQLNonNull(new GraphQLList(new GraphQLList(GraphQLInt)))
                     },
+                    imageDimensions: {
+                        type: new GraphQLNonNull(new GraphQLList(new GraphQLList(GraphQLInt)))
+                    },
                     backgroundColor: {
                         type: new GraphQLNonNull(GraphQLString)
                     },
@@ -239,8 +248,8 @@ var mutation = new GraphQLObjectType({
                     borderRadius: {
                         type: new GraphQLNonNull(GraphQLInt)
                     },
-                    padding: {
-                        type: new GraphQLNonNull(GraphQLInt)
+                    dimensions: {
+                        type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
                     },
                     location: {
                         type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
@@ -249,9 +258,9 @@ var mutation = new GraphQLObjectType({
                 resolve(root, params) {
                     return LogoModel.findByIdAndUpdate(params.id,
                         { texts: params.texts, textLocations: params.textLocations, textColors: params.textColors, fontSizes: params.fontSizes,
-                            images: params.images, imageLocations: params.imageLocations, backgroundColor : params.backgroundColor, borderColor : params.borderColor,
-                            borderWidth: params.borderWidth, borderRadius: params.borderRadius,
-                            padding: params.padding, location: params.location, lastUpdate: new Date() }, function (err) {
+                            images: params.images, imageLocations: params.imageLocations, imageDimensions: params.imageDimensions, backgroundColor : params.backgroundColor, borderColor : params.borderColor,
+                            borderWidth: params.borderWidth, borderRadius: params.borderRadius, dimensions:params.dimensions,
+                             location: params.location, lastUpdate: new Date() }, function (err) {
                         if (err) return next(err);
                     });
                 }
