@@ -62,7 +62,8 @@ class ViewLogoScreen extends Component {
         super(props)
 
         this.state = {
-            image: ""
+            image: "",
+            name: "",
         }
     }
     genText = (texts, textLocations, textColors, fontSizes, margin) => {
@@ -105,12 +106,15 @@ class ViewLogoScreen extends Component {
         }
     }
     handleExport = () => {
-        let url = html2canvas(document.querySelector("#capture")).then(canvas => {
-            let idk = canvas.toDataURL()
-            console.log(idk)
-            return idk
+        html2canvas(document.querySelector("#capture")).then(canvas => {
+            let uri = canvas.toDataURL()
+            let link = document.createElement('a');
+            link.href = uri
+            link.download = "idk.png"
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
         });
-        url.then(i=>{this.setState({image:i})})
     }
     render() {
         return (
@@ -118,7 +122,6 @@ class ViewLogoScreen extends Component {
                 {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
-                    console.log(data)
                     return (
                         <div className="container">
                             <div className="panel panel-default">
@@ -130,10 +133,9 @@ class ViewLogoScreen extends Component {
                                 </div>
                                 <div className="panel-body row">
                                     <div className="col-4">
-                                        <p>To Download, Click Step 1, then Click step 2</p>
-                                    <input type="button" onClick={this.handleExport} className="btn" value="Step 1"></input>
-                                    <a href={this.state.image} className="btn" id="btn-download" download={this.state.image} >Step 2</a>
                                         <dl>
+                                            <dt>Download Here:</dt>
+                                            <dd><input type="button" onClick={this.handleExport} className="btn btn-info" value="Download"></input></dd>
                                             <dt>Texts:</dt>
                                             <dd>{genList(data.logo.texts, "text")}</dd>
                                             <dt>Images:</dt>

@@ -135,23 +135,15 @@ class EditLogoScreen extends Component {
                                             let location = this.state.textLocations?this.state.textLocations:textLocations;
                                             location.splice(index,1)
                                             this.setState({textChange:false});
-                                            console.log(texts, sizes, color, location)
                                         }}>&#128465;</Button>]}
                             trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Edit</button>}>
-                            <div className="modal-content">
                                 <h4>Edit Text</h4>
-                                <div className="form-group">
-                                    <label htmlFor="text">Text:</label>
-                                    <input type="text" className="form-control" onChange={(e)=>{this.setState({text:e.target.value,textChange:true})}} name="text" placeholder={x} defaultValue={x} />
-                                    <label htmlFor="fontSize">Font Size:</label>
-                                    <input type="number" min = "5" max="100" className="form-control" onChange={(e)=>{this.setState({size:e.target.value,sizeChange:true})}} name="fontSize" placeholder={fontSizes[index]} defaultValue={fontSizes[index]} />
-                                    <label htmlFor="fontColor">Font Color:</label>
-                                    <input type="color" className="form-control" name="fontColor" onChange={(e)=>{this.setState({color:e.target.value,colorChange:true})}} placeholder={fontColor[index]} defaultValue={fontColor[index]} />
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <span className="red-text"></span>
-                            </div>
+                                <label htmlFor="text">Text:</label>
+                                <input type="text" className="form-control" onChange={(e)=>{this.setState({text:e.target.value,textChange:true})}} name="text" placeholder={x} defaultValue={x} />
+                                <label htmlFor="fontSize">Font Size:</label>
+                                <input type="number" min = "5" max="100" className="form-control" onChange={(e)=>{this.setState({size:e.target.value,sizeChange:true})}} name="fontSize" placeholder={fontSizes[index]} defaultValue={fontSizes[index]} />
+                                <label htmlFor="fontColor">Font Color:</label>
+                                <input type="color" className="form-control" name="fontColor" onChange={(e)=>{this.setState({color:e.target.value,colorChange:true})}} placeholder={fontColor[index]} defaultValue={fontColor[index]} />
                         </Modal>
                     </li>
                 ))}
@@ -181,20 +173,13 @@ class EditLogoScreen extends Component {
                 }}>Add</Button>,
                             <Button flat modal="close" node="button" waves="green">Close</Button>]}
                 trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Add Text</button>}>
-                <div className="modal-content">
                     <h4>Add Text</h4>
-                    <div className="form-group">
-                        <label htmlFor="text">Text:</label>
-                        <input type="text" className="form-control" onChange={(e)=>{this.setState({text:e.target.value,textChange:true})}} name="text" placeholder="GoLogoLo" defaultValue="GoLogoLo" />
-                        <label htmlFor="fontSize">Font Size:</label>
-                        <input type="number" min = "5" max="100" className="form-control" onChange={(e)=>{this.setState({size:e.target.value,sizeChange:true})}} name="fontSize" placeholder="20" defaultValue="20" />
-                        <label htmlFor="fontColor">Font Color:</label>
-                        <input type="color" className="form-control" name="fontColor" onChange={(e)=>{this.setState({color:e.target.value,colorChange:true})}} placeholder="#111111" defaultValue="#111111" />
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <span className="red-text"></span>
-                </div>
+                    <label htmlFor="text">Text:</label>
+                    <input type="text" className="form-control" onChange={(e)=>{this.setState({text:e.target.value,textChange:true})}} name="text" placeholder="GoLogoLo" defaultValue="GoLogoLo" />
+                    <label htmlFor="fontSize">Font Size:</label>
+                    <input type="number" min = "5" max="100" className="form-control" onChange={(e)=>{this.setState({size:e.target.value,sizeChange:true})}} name="fontSize" placeholder="20" defaultValue="20" />
+                    <label htmlFor="fontColor">Font Color:</label>
+                    <input type="color" className="form-control" name="fontColor" onChange={(e)=>{this.setState({color:e.target.value,colorChange:true})}} placeholder="#111111" defaultValue="#111111" />
             </Modal>
         </div>
             )
@@ -217,7 +202,6 @@ class EditLogoScreen extends Component {
                             if(this.state.imgHeightChange){
                                 dimes[index][1]=parseInt(this.state.imgHeight);
                             }
-                            console.log(dimes)
                             this.setState({urlChange:false, imgWidthChange:false, imgHeightChange:false})
                         }}>Change</Button>,
                                     <Button flat modal="close" node="button" waves="green">Close</Button>,
@@ -231,20 +215,13 @@ class EditLogoScreen extends Component {
                                         this.setState({urlChange:false});
                                     }}>&#128465;</Button>]}
                         trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Edit</button>}>
-                        <div className="modal-content">
                             <h4>Edit Image</h4>
-                            <div className="form-group">
-                                <label htmlFor="url">URL:</label>
-                                <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url" placeholder={x} defaultValue={x} />
-                                <label htmlFor="imgWidth">Width:</label>
-                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgWidth:e.target.value, imgWidthChange:true})}} name="imgWidth" placeholder={dimensions[index][0]} defaultValue={dimensions[index][0]} />
-                                <label htmlFor="imgHeight">Height:</label>
-                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgHeight:e.target.value, imgHeightChange:true})}} name="imgHeight" placeholder={dimensions[index][1]} defaultValue={dimensions[index][1]} />
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <span className="red-text"></span>
-                        </div>
+                            <label htmlFor="url">URL:</label>
+                            <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url" placeholder={x} defaultValue={x} />
+                            <label htmlFor="imgWidth">Width:</label>
+                            <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgWidth:e.target.value, imgWidthChange:true})}} name="imgWidth" placeholder={dimensions[index][0]} defaultValue={dimensions[index][0]} />
+                            <label htmlFor="imgHeight">Height:</label>
+                            <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgHeight:e.target.value, imgHeightChange:true})}} name="imgHeight" placeholder={dimensions[index][1]} defaultValue={dimensions[index][1]} />
                     </Modal></li>
                     ))}
                 </ul>
@@ -274,20 +251,13 @@ class EditLogoScreen extends Component {
                 }}>Add</Button>,
                             <Button flat modal="close" node="button" waves="green">Close</Button>]}
                 trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Add Image</button>}>
-                <div className="modal-content">
                     <h4>Edit Image</h4>
-                    <div className="form-group">
                     <label htmlFor="url">URL:</label>
-                                <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url"/>
-                                <label htmlFor="imgWidth">Width:</label>
-                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgWidth:e.target.value, imgWidthChange:true})}} name="imgWidth" defaultValue="100" />
-                                <label htmlFor="imgHeight">Height:</label>
-                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgHeight:e.target.value, imgHeightChange:true})}} name="imgHeight" defaultValue="100" />
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <span className="red-text"></span>
-                </div>
+                    <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url"/>
+                    <label htmlFor="imgWidth">Width:</label>
+                    <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgWidth:e.target.value, imgWidthChange:true})}} name="imgWidth" defaultValue="100" />
+                    <label htmlFor="imgHeight">Height:</label>
+                    <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgHeight:e.target.value, imgHeightChange:true})}} name="imgHeight" defaultValue="100" />
             </Modal>
             </div>)
     }
@@ -367,7 +337,6 @@ class EditLogoScreen extends Component {
                                         <div className="panel-body row">                                            
                                             <form className="col-4" onSubmit={e => {
                                                 e.preventDefault();
-                                                console.log(width.value, height.value)
                                                 let texts2 = data.logo.texts
                                                 let textLocations2 = data.logo.textLocations
                                                 let textColors2 = data.logo.textColors
@@ -376,7 +345,6 @@ class EditLogoScreen extends Component {
                                                 let imageLocations2 = data.logo.imageLocations
                                                 let imageDimensions2 = data.logo.imageDimensions
                                                 let dimensions2 = [parseInt(width.value), parseInt(height.value)]
-                                                console.log(dimensions2)
                                                 updateLogo({ variables: { id: data.logo._id, texts: texts2, textLocations: textLocations2, textColors: textColors2, fontSizes: fontSizes2,
                                                                         images: images2, imageLocations: imageLocations2, imageDimensions: imageDimensions2, backgroundColor: backgroundColor.value,
                                                                         borderColor: borderColor.value, borderRadius: parseInt(borderRadius.value), borderWidth: parseInt(borderWidth.value),
@@ -412,7 +380,7 @@ class EditLogoScreen extends Component {
                                                     <label htmlFor="borderColor">Border Color:</label>
                                                     <input type="color" className="form-control" name="borderColor" ref={node => {
                                                         borderColor = node;
-                                                    }} onChange={() => this.setState({borderColor: borderColor.value})} placeholder={data.logo.color} defaultValue={data.logo.borderColor} />
+                                                    }} onChange={() => this.setState({borderColor: borderColor.value})} placeholder={data.logo.borderColor} defaultValue={data.logo.borderColor} />
                                                 </div>
                                                 <div className="form-group col-10">
                                                     <label htmlFor="borderWidth">Border Width:</label>
@@ -455,11 +423,9 @@ class EditLogoScreen extends Component {
                                             <div className="col-6">
                                                 <div style={{
                                                     display: "inline-block",
-                                                    color: this.state.renderColor ? this.state.renderColor : data.logo.color,
                                                     backgroundColor: this.state.backgroundColor ? this.state.backgroundColor : data.logo.backgroundColor,
                                                     borderColor: this.state.borderColor ? this.state.borderColor : data.logo.borderColor,
                                                     borderStyle: "solid",
-                                                    fontSize: (this.state.renderFontSize ? this.state.renderFontSize : data.logo.fontSize) + "pt",
                                                     borderWidth: (this.state.borderWidth ? this.state.borderWidth : data.logo.borderWidth) + "px",
                                                     borderRadius: (this.state.borderRadius ? this.state.borderRadius : data.logo.borderRadius) + "px",
                                                     padding: (this.state.padding ? this.state.padding : data.logo.padding) + "px",
