@@ -219,7 +219,13 @@ class EditLogoScreen extends Component {
                         }}>Change</Button>,
                                     <Button flat modal="close" node="button" waves="green">Close</Button>,
                                     <Button flat modal="close" node="button" onClick={()=>{
-                                        
+                                        let imgs=this.state.images?this.state.images:list;
+                                        imgs.splice(index,1)
+                                        let dimes=this.state.imageDimensions?this.state.imageDimensions:dimensions;
+                                        dimes.splice(index,1)
+                                        let location = this.state.imageLocations?this.state.imageLocations:locations;
+                                        location.splice(index,1)
+                                        this.setState({urlChange:false});
                                     }}>&#128465;</Button>]}
                         trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Edit</button>}>
                         <div className="modal-content">
@@ -263,11 +269,11 @@ class EditLogoScreen extends Component {
                     location.push([0,0])
                     this.setState({urlChange:false, imgWidthChange:false, imgHeightChange:false})
                     console.log(imgs, dimes, location)
-                }}>Change</Button>,
+                }}>Add</Button>,
                             <Button flat modal="close" node="button" waves="green">Close</Button>]}
                 trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Add Image</button>}>
                 <div className="modal-content">
-                    <h4>Edit Text</h4>
+                    <h4>Edit Image</h4>
                     <div className="form-group">
                     <label htmlFor="url">URL:</label>
                                 <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url"/>
@@ -339,13 +345,12 @@ class EditLogoScreen extends Component {
         }
     }
     render() {
-        let texts, textLocations, textColors, fontSizes, images, imageLocations, backgroundColor, borderColor, borderRadius, borderWidth, location, width, height;
+        let backgroundColor, borderColor, borderRadius, borderWidth, width, height;
         return (
             <Query query={GET_LOGO} variables={{ logoId: this.props.match.params.id }}>
                 {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
-
                     return (
                         <Mutation mutation={UPDATE_LOGO} key={data.logo._id} onCompleted={() => this.props.history.push(`/`)}>
                             {(updateLogo, { loading, error }) => (

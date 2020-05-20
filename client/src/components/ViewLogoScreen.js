@@ -55,41 +55,43 @@ const genList = (list, type) => {
     }
 }
 
-const genText = (texts, textLocations, textColors, fontSizes) => {
-    return(
-        texts.map((text, index) => (
-            <div key={index}
-            style={{
-                position: 'absolute',
-                left: textLocations[index][0] + 10,
-                top: textLocations[index][1],
-                textAlign: 'center',
-                color: textColors[index],
-                fontSize: fontSizes[index]}}>{text}</div>
-        ))
-    )
-}
-const genImages = (images, imageLocations, imageDimensions) => {
-    if(images){
-        console.log('here')
-        return(
-            images.map((image, index) => (
-                <div key={index}
-                style={{
-                textAlign: 'center',
-                position: 'absolute',
-                left: imageLocations[index][0] + 10,
-                top: imageLocations[index][1],}}><img width={imageDimensions[index][0]} height={imageDimensions[index][1]}  draggable="false" src={images[index]} alt="img"></img></div>
-            ))
-        )
-    }
-}
 class ViewLogoScreen extends Component {
     constructor(props){
         super(props)
 
         this.state = {
-            image: "",
+            image: ""
+        }
+    }
+    genText = (texts, textLocations, textColors, fontSizes) => {
+        if(texts.length!==textLocations.length){
+            textLocations.push([0,0])
+        }
+        return(
+            texts.map((text, index) => (
+                <div key={index}
+                style={{
+                    position: 'absolute',
+                    left: textLocations[index][0] + 10,
+                    top: textLocations[index][1],
+                    textAlign: 'center',
+                    color: textColors[index],
+                    fontSize: fontSizes[index]}}>{text}</div>
+            ))
+        )
+    }
+    genImages = (images, imageLocations, imageDimensions) => {
+        if(images){
+            return(
+                images.map((image, index) => (
+                    <div key={index}
+                    style={{
+                    textAlign: 'center',
+                    position: 'absolute',
+                    left: imageLocations[index][0] + 10,
+                    top: imageLocations[index][1],}}><img width={imageDimensions[index][0]} height={imageDimensions[index][1]}  draggable="false" src={images[index]} alt="img"></img></div>
+                ))
+            )
         }
     }
     handleExport = () => {
@@ -118,6 +120,9 @@ class ViewLogoScreen extends Component {
                                 </div>
                                 <div className="panel-body row">
                                     <div className="col-4">
+                                        <p>To Download, Click Step 1, then Click step 2</p>
+                                    <input type="button" onClick={this.handleExport} className="btn" value="Step 1"></input>
+                                    <a href={this.state.image} className="btn" id="btn-download" download={this.state.image} >Step 2</a>
                                         <dl>
                                             <dt>Texts:</dt>
                                             <dd>{genList(data.logo.texts, "text")}</dd>
@@ -147,9 +152,6 @@ class ViewLogoScreen extends Component {
                                                     <Link to={`/edit/${data.logo._id}`} className="btn btn-success">Edit</Link>&nbsp;
                                                 <button type="submit" className="btn btn-danger">Delete</button>
                                                 </form>
-                                                <p>To Download, click Step 1 then step 2</p>
-                                                <input type="button" onClick={this.handleExport} className="btn" value="Step 1"></input>
-                                                <a href={this.state.image} className="btn" id="btn-download" download={this.state.image} >Step 2</a>
                                                 {loading && <p>Loading...</p>}
                                                 {error && <p>Error :( Please try again</p>}
                                             </div>
@@ -171,8 +173,8 @@ class ViewLogoScreen extends Component {
                                             borderWidth: data.logo.borderWidth + "px",
                                             borderRadius: data.logo.borderRadius + "px",
                                             padding: data.logo.padding + "px"
-                                        }}>{genText(data.logo.texts, data.logo.textLocations, data.logo.textColors, data.logo.fontSizes)}
-                                        {genImages(data.logo.images, data.logo.imageLocations, data.logo.imageDimensions)}</div>
+                                        }}>{this.genText(data.logo.texts, data.logo.textLocations, data.logo.textColors, data.logo.fontSizes)}
+                                        {this.genImages(data.logo.images, data.logo.imageLocations, data.logo.imageDimensions)}</div>
                                     </div>
                                 </div>
                             </div>
