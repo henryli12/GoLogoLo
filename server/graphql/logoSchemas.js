@@ -53,8 +53,11 @@ var logoType = new GraphQLObjectType({
             dimensions: {
                 type: new GraphQLList(GraphQLInt)
             },
-            location: {
-                type: new GraphQLList(GraphQLInt)
+            margin: {
+                type: GraphQLInt
+            },
+            padding: {
+                type: GraphQLInt
             },
             lastUpdate: {
                 type: GraphQLDate
@@ -195,8 +198,11 @@ var mutation = new GraphQLObjectType({
                     dimensions: {
                         type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
                     },
-                    location: {
-                        type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
+                    margin: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    padding: {
+                        type: new GraphQLNonNull(GraphQLInt)
                     }
                 },
                 resolve: function (root, params) {
@@ -251,8 +257,11 @@ var mutation = new GraphQLObjectType({
                     dimensions: {
                         type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
                     },
-                    location: {
-                        type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
+                    margin: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    padding: {
+                        type: new GraphQLNonNull(GraphQLInt)
                     }
                 },
                 resolve(root, params) {
@@ -260,7 +269,7 @@ var mutation = new GraphQLObjectType({
                         { texts: params.texts, textLocations: params.textLocations, textColors: params.textColors, fontSizes: params.fontSizes,
                             images: params.images, imageLocations: params.imageLocations, imageDimensions: params.imageDimensions, backgroundColor : params.backgroundColor, borderColor : params.borderColor,
                             borderWidth: params.borderWidth, borderRadius: params.borderRadius, dimensions:params.dimensions,
-                             location: params.location, lastUpdate: new Date() }, function (err) {
+                             margin: params.margin, padding: params.padding, lastUpdate: new Date() }, function (err) {
                         if (err) return next(err);
                     });
                 }

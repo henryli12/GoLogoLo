@@ -21,8 +21,9 @@ query logo($logoId: String) {
         borderColor
         borderWidth
         borderRadius
-        location
         dimensions
+        padding
+        margin
         lastUpdate
     }
 }
@@ -43,7 +44,8 @@ const UPDATE_LOGO = gql`
         $borderWidth: Int!,
         $borderRadius: Int!,
         $dimensions: [Int]!,
-        $location: [Int]!) {
+        $margin: Int!,
+        $padding: Int!) {
             updateLogo(
                 id: $id,
                 texts: $texts,
@@ -58,7 +60,8 @@ const UPDATE_LOGO = gql`
                 borderWidth: $borderWidth,
                 borderRadius: $borderRadius,
                 dimensions: $dimensions,
-                location: $location) {
+                margin: $margin,
+                padding: $padding) {
                     lastUpdate
                 }
         }
@@ -81,10 +84,10 @@ class EditLogoScreen extends Component {
             borderColor: "",
             borderRadius: "",
             borderWidth: "",
-            padding: "",
             width: "",
             height: "",
-            location: "",
+            padding: "",
+            margin: "",
             textChange: false,
             text: "",
             sizeChange: false,
@@ -268,7 +271,6 @@ class EditLogoScreen extends Component {
                     let location = this.state.imageLocations?this.state.imageLocations:locations
                     location.push([0,0])
                     this.setState({urlChange:false, imgWidthChange:false, imgHeightChange:false})
-                    console.log(imgs, dimes, location)
                 }}>Add</Button>,
                             <Button flat modal="close" node="button" waves="green">Close</Button>]}
                 trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Add Image</button>}>
@@ -345,7 +347,7 @@ class EditLogoScreen extends Component {
         }
     }
     render() {
-        let backgroundColor, borderColor, borderRadius, borderWidth, width, height;
+        let backgroundColor, borderColor, borderRadius, borderWidth, width, height, margin, padding;
         return (
             <Query query={GET_LOGO} variables={{ logoId: this.props.match.params.id }}>
                 {({ loading, error, data }) => {
@@ -373,14 +375,12 @@ class EditLogoScreen extends Component {
                                                 let images2 = data.logo.images
                                                 let imageLocations2 = data.logo.imageLocations
                                                 let imageDimensions2 = data.logo.imageDimensions
-                                                let location2 = data.logo.location
                                                 let dimensions2 = [parseInt(width.value), parseInt(height.value)]
-                                                console.log(texts2, textColors2, fontSizes2, images2, imageLocations2, location2);
-                                                console.log(backgroundColor.value)
+                                                console.log(dimensions2)
                                                 updateLogo({ variables: { id: data.logo._id, texts: texts2, textLocations: textLocations2, textColors: textColors2, fontSizes: fontSizes2,
                                                                         images: images2, imageLocations: imageLocations2, imageDimensions: imageDimensions2, backgroundColor: backgroundColor.value,
                                                                         borderColor: borderColor.value, borderRadius: parseInt(borderRadius.value), borderWidth: parseInt(borderWidth.value),
-                                                                        location: location2, dimensions: dimensions2} });
+                                                                        margin: parseInt(margin.value), padding:parseInt(padding.value), dimensions: dimensions2} });
                                                 // texts.value = "";
                                                 // textLocations.value = "";
                                                 // textColors.value = "";
@@ -438,6 +438,18 @@ class EditLogoScreen extends Component {
                                                         height = node;
                                                     }} onChange={() => this.setState({height: parseInt(height.value)})} placeholder={data.logo.dimensions[1]} defaultValue={data.logo.dimensions[1]} />
                                                 </div>
+                                                <div className="form-group col-10">
+                                                    <label htmlFor="margin">Margin:</label>
+                                                    <input type="number" onInput={()=>{margin.value = clamp(margin.value, 0, 100);}} className="form-control" name="margin" ref={node => {
+                                                        margin = node;
+                                                    }} onChange={() => this.setState({margin: parseInt(margin.value)})} placeholder={data.logo.margin} defaultValue={data.logo.margin} />
+                                                </div>
+                                                <div className="form-group col-10">
+                                                    <label htmlFor="padding">Padding:</label>
+                                                    <input type="number" onInput={()=>{padding.value = clamp(padding.value, 0, 100);}} className="form-control" name="padding" ref={node => {
+                                                        padding = node;
+                                                    }} onChange={() => this.setState({padding: parseInt(padding.value)})} placeholder={data.logo.padding} defaultValue={data.logo.padding} />
+                                                </div>
                                                 <button type="submit" className="btn btn-success">Submit</button>
                                             </form>
                                             <div className="col-6">
@@ -452,7 +464,8 @@ class EditLogoScreen extends Component {
                                                     borderRadius: (this.state.borderRadius ? this.state.borderRadius : data.logo.borderRadius) + "px",
                                                     padding: (this.state.padding ? this.state.padding : data.logo.padding) + "px",
                                                     width: (this.state.width? this.state.width : data.logo.dimensions[0]),
-                                                    height: (this.state.height? this.state.height : data.logo.dimensions[1])
+                                                    height: (this.state.height? this.state.height : data.logo.dimensions[1]),
+                                                    margin: (this.state.margin?this.state.margin: data.logo.margin)
                                                 }}>{this.genText(this.state.texts?this.state.texts:data.logo.texts, this.state.textLocations?this.state.textLocations:data.logo.textLocations, this.state.textColors?this.state.textColors:data.logo.textColors, this.state.fontSizes?this.state.fontSizes:data.logo.fontSizes)}
                                                 {this.genImages(this.state.images?this.state.images:data.logo.images, this.state.imageLocations?this.state.imageLocations:data.logo.imageLocations, this.state.imageDimensions?this.state.imageDimensions:data.logo.imageDimensions)}</div>
                                             </div>

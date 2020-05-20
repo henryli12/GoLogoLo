@@ -4,6 +4,7 @@ import '../App.css';
 import gql from 'graphql-tag';
 import { Query, Mutation } from 'react-apollo';
 import html2canvas from 'html2canvas';
+import { Rnd } from "react-rnd";
 
 const GET_LOGO = gql`
     query logo($logoId: String) {
@@ -21,7 +22,8 @@ const GET_LOGO = gql`
             borderWidth
             borderRadius
             dimensions
-            location
+            margin
+            padding
             lastUpdate
         }
     }
@@ -63,33 +65,41 @@ class ViewLogoScreen extends Component {
             image: ""
         }
     }
-    genText = (texts, textLocations, textColors, fontSizes) => {
+    genText = (texts, textLocations, textColors, fontSizes, margin) => {
         if(texts.length!==textLocations.length){
             textLocations.push([0,0])
         }
         return(
             texts.map((text, index) => (
-                <div key={index}
+                <Rnd key={index}
+                bounds="parent"
+                enableResizing="false"
+                disableDragging="true"
+                default={{
+                    x:textLocations[index][0]?textLocations[index][0]:0,
+                    y:textLocations[index][1]?textLocations[index][1]:0,
+                }}
                 style={{
-                    position: 'absolute',
-                    left: textLocations[index][0] + 10,
-                    top: textLocations[index][1],
-                    textAlign: 'center',
-                    color: textColors[index],
-                    fontSize: fontSizes[index]}}>{text}</div>
+                textAlign: 'center',
+                color: textColors[index],
+                fontSize: fontSizes[index]}}>{text}</Rnd>
             ))
         )
     }
-    genImages = (images, imageLocations, imageDimensions) => {
+    genImages = (images, imageLocations, imageDimensions, margin) => {
         if(images){
             return(
                 images.map((image, index) => (
-                    <div key={index}
+                    <Rnd key={index}
+                    bounds="parent"
+                    default={{
+                        x:imageLocations[index][0],
+                        y:imageLocations[index][1],
+                    }}
+                    disableDragging="true"
+                    enableResizing="false"
                     style={{
-                    textAlign: 'center',
-                    position: 'absolute',
-                    left: imageLocations[index][0] + 10,
-                    top: imageLocations[index][1],}}><img width={imageDimensions[index][0]} height={imageDimensions[index][1]}  draggable="false" src={images[index]} alt="img"></img></div>
+                    textAlign: 'center'}}><img width={imageDimensions[index][0]} height={imageDimensions[index][1]}  draggable="false" src={images[index]} alt="img"></img></Rnd>
                 ))
             )
         }
@@ -138,6 +148,10 @@ class ViewLogoScreen extends Component {
                                             <dd>{data.logo.borderRadius}</dd>
                                             <dt>Dimension:</dt>
                                             <dd>{data.logo.dimensions[0]} x {data.logo.dimensions[1]}</dd>
+                                            <dt>Margin:</dt>
+                                            <dd>{data.logo.margin}</dd>
+                                            <dt>Padding:</dt>
+                                            <dd>{data.logo.padding}</dd>
                                             <dt>Last Updated:</dt>
                                             <dd>{data.logo.lastUpdate}</dd>
                                         </dl>
@@ -172,9 +186,10 @@ class ViewLogoScreen extends Component {
                                             fontSize: data.logo.fontSize + "pt",
                                             borderWidth: data.logo.borderWidth + "px",
                                             borderRadius: data.logo.borderRadius + "px",
-                                            padding: data.logo.padding + "px"
-                                        }}>{this.genText(data.logo.texts, data.logo.textLocations, data.logo.textColors, data.logo.fontSizes)}
-                                        {this.genImages(data.logo.images, data.logo.imageLocations, data.logo.imageDimensions)}</div>
+                                            padding: data.logo.padding + "px",
+                                            margin: data.logo.margin + "px"
+                                        }}>{this.genText(data.logo.texts, data.logo.textLocations, data.logo.textColors, data.logo.fontSizes, data.logo.margin)}
+                                        {this.genImages(data.logo.images, data.logo.imageLocations, data.logo.imageDimensions, data.logo.margin)}</div>
                                     </div>
                                 </div>
                             </div>
