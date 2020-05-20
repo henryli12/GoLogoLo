@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
 import { clamp } from "../utils/utlity";
 import { Rnd } from "react-rnd";
+import { Modal, Range, TextInput, Button} from 'react-materialize';
 
 const GET_LOGO = gql`
 query logo($logoId: String) {
@@ -71,8 +72,8 @@ const genText = (texts, textLocations, textColors, fontSizes) => {
                 bounds="parent"
                 enableResizing="false"
                 default={{
-                    x:textLocations[index][0],
-                    y:textLocations[index][1],
+                    x:textLocations[index][0]?textLocations[index][0]:0,
+                    y:textLocations[index][1]?textLocations[index][1]:0,
                 }}
                 onClick =  {
                     () => {}
@@ -93,7 +94,6 @@ const genText = (texts, textLocations, textColors, fontSizes) => {
 }
 const genImages = (images, imageLocations, imageDimensions) => {
     if(images){
-        console.log('here')
         return(
             images.map((image, index) => (
                 <Rnd key={index}
@@ -137,8 +137,68 @@ class EditLogoScreen extends Component {
             padding: "",
             width: "",
             height: "",
-            location: ""
+            location: "",
+            textChange: false,
+            text: "",
+            sizeChange: false,
+            size: "",
+            colorChange: false,
+            color: "",
         }
+    }
+
+    genTextList = (list, fontSizes, fontColor,textLocations) => {
+        return( 
+            <ul className="list-group overflow-auto" style={{maxHeight: 150 + 'px'}}>
+                {list.map((x, index) =>(
+                    <li key={index} className="list-group-item">{x}
+                        <Modal className="col-6" actions={[<Button flat modal="close" node="button" waves="red" onClick={()=>{
+                                console.log(this.state.text);
+                                if(this.state.textChange){
+                                    let texts=this.state.texts?this.state.texts:list
+                                    texts[index]=this.state.text;
+                                }
+                                if(this.state.sizeChange){
+                                    let sizes=this.state.fontSizes?this.state.fontSizes:fontSizes;
+                                    sizes[index]=parseInt(this.state.size);
+                                }
+                                if(this.state.colorChange){
+                                    let color = this.state.textColors?this.state.textColors:fontColor;
+                                    color[index] = this.state.color;
+                                }
+                                // let location = this.state.textLocations?this.state.textLocations:textLocations
+                                // location.push([0,0])
+                                this.setState({textChange:false})
+                            }}>Change</Button>,
+                                        <Button flat modal="close" node="button" waves="green">Close</Button>]}
+                            trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Edit</button>}>
+                            <div className="modal-content">
+                                <h4>Edit Text</h4>
+                                <div className="form-group">
+                                    <label htmlFor="text">Text:</label>
+                                    <input type="text" className="form-control" onChange={(e)=>{this.setState({text:e.target.value,textChange:true})}} name="text" placeholder={x} defaultValue={x} />
+                                    <label htmlFor="fontSize">Font Size:</label>
+                                    <input type="number" min = "5" max="100" className="form-control" onChange={(e)=>{this.setState({size:e.target.value,sizeChange:true})}} name="fontSize" placeholder={fontSizes[index]} defaultValue={fontSizes[index]} />
+                                    <label htmlFor="fontColor">Font Color:</label>
+                                    <input type="color" className="form-control" name="fontColor" onChange={(e)=>{this.setState({color:e.target.value,colorChange:true})}} placeholder={fontColor[index]} defaultValue={fontColor[index]} />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <span className="red-text"></span>
+                            </div>
+                        </Modal>
+                    </li>
+                ))}
+            </ul>
+            )
+    }
+    genImageList = (list) =>{
+        return( 
+            <ul className="list-group overflow-auto" style={{maxHeight: 150 + 'px'}}>
+                {list.map((x, index) =>(
+                    <li key={index} className="list-group-item"><img src={x} width="25" height="25" alt="Error"></img></li>
+                ))}
+            </ul>)
     }
 
     render() {
@@ -174,6 +234,7 @@ class EditLogoScreen extends Component {
                                                 let location2 = data.logo.location
                                                 let dimensions2 = [parseInt(width.value), parseInt(height.value)]
                                                 console.log(texts2, textColors2, fontSizes2, images2, imageLocations2, location2);
+                                                console.log(backgroundColor.value)
                                                 updateLogo({ variables: { id: data.logo._id, texts: texts2, textLocations: textLocations2, textColors: textColors2, fontSizes: fontSizes2,
                                                                         images: images2, imageLocations: imageLocations2, imageDimensions: imageDimensions2, backgroundColor: backgroundColor.value,
                                                                         borderColor: borderColor.value, borderRadius: parseInt(borderRadius.value), borderWidth: parseInt(borderWidth.value),
@@ -193,21 +254,11 @@ class EditLogoScreen extends Component {
                                             }}>
                                                 <div className="form-group col-10">
                                                     <label htmlFor="texts">Texts:</label>
-                                                    <input type="text" className="form-control" name="texts" ref={node => {
-                                                        texts = node;
-                                                    }} onChange={() => this.setState({texts: texts.value})} placeholder={data.logo.texts} defaultValue={data.logo.texts} />
+                                                    <div>{this.genTextList(data.logo.texts, data.logo.fontSizes, data.logo.textColors, data.logo.textLocations)}</div>
                                                 </div>
                                                 <div className="form-group col-10">
                                                     <label htmlFor="images">Images:</label>
-                                                    <input type="text" className="form-control" name="images" ref={node => {
-                                                        images = node;
-                                                    }} onChange={() => this.setState({images: images.value})} placeholder={data.logo.images} defaultValue={data.logo.images} />
-                                                </div>
-                                                <div className="form-group col-10">
-                                                    <label htmlFor="textColors">Colors:</label>
-                                                    <input type="text" className="form-control" name="text" ref={node => {
-                                                        textColors = node;
-                                                    }}onChange={() => this.setState({textColors: textColors.value})} placeholder={data.logo.textColors} defaultValue={data.logo.textColors} />
+                                                    <div>{this.genImageList(data.logo.images)}</div>                                                
                                                 </div>
                                                 <div className="form-group col-10">
                                                     <label htmlFor="backgroundColor">Background Color:</label>
@@ -260,7 +311,7 @@ class EditLogoScreen extends Component {
                                                     padding: (this.state.padding ? this.state.padding : data.logo.padding) + "px",
                                                     width: (this.state.width? this.state.width : data.logo.dimensions[0]),
                                                     height: (this.state.height? this.state.height : data.logo.dimensions[1])
-                                                }}>{genText(data.logo.texts, data.logo.textLocations, data.logo.textColors, data.logo.fontSizes)}
+                                                }}>{genText(this.state.texts?this.state.texts:data.logo.texts, this.state.textLocations?this.state.textLocations:data.logo.textLocations, this.state.textColors?this.state.textColors:data.logo.textColors, this.state.fontSizes?this.state.fontSizes:data.logo.fontSizes)}
                                                 {genImages(data.logo.images, data.logo.imageLocations, data.logo.imageDimensions)}</div>
                                             </div>
                                             {loading && <p>Loading...</p>}

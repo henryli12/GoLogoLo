@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../App.css';
 import gql from 'graphql-tag';
 import { Query, Mutation } from 'react-apollo';
+import html2canvas from 'html2canvas';
 
 const GET_LOGO = gql`
     query logo($logoId: String) {
@@ -84,6 +85,21 @@ const genImages = (images, imageLocations, imageDimensions) => {
     }
 }
 class ViewLogoScreen extends Component {
+    constructor(props){
+        super(props)
+
+        this.state = {
+            image: "",
+        }
+    }
+    handleExport = () => {
+        let url = html2canvas(document.querySelector("#capture")).then(canvas => {
+            let idk = canvas.toDataURL()
+            console.log(idk)
+            return idk
+        });
+        url.then(i=>{this.setState({image:i})})
+    }
     render() {
         return (
             <Query pollInterval={500} query={GET_LOGO} variables={{ logoId: this.props.match.params.id }}>
@@ -131,6 +147,9 @@ class ViewLogoScreen extends Component {
                                                     <Link to={`/edit/${data.logo._id}`} className="btn btn-success">Edit</Link>&nbsp;
                                                 <button type="submit" className="btn btn-danger">Delete</button>
                                                 </form>
+                                                <p>To Download, click Step 1 then step 2</p>
+                                                <input type="button" onClick={this.handleExport} className="btn" value="Step 1"></input>
+                                                <a href={this.state.image} className="btn" id="btn-download" download={this.state.image} >Step 2</a>
                                                 {loading && <p>Loading...</p>}
                                                 {error && <p>Error :( Please try again</p>}
                                             </div>
@@ -138,7 +157,7 @@ class ViewLogoScreen extends Component {
                                     </Mutation>
                                     </div>
                                     <div className="col-8">
-                                        <div 
+                                        <div id="capture" 
                                         style={{
                                             display: "inline-block",
                                             width:data.logo.dimensions[0],
