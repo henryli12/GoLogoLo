@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import { Query, Mutation } from "react-apollo";
 import { clamp } from "../utils/utlity";
 import { Rnd } from "react-rnd";
-import { Modal, Range, TextInput, Button} from 'react-materialize';
+import { Modal, Button} from 'react-materialize';
 
 const GET_LOGO = gql`
 query logo($logoId: String) {
@@ -64,60 +64,6 @@ const UPDATE_LOGO = gql`
         }
 `;
 
-const genText = (texts, textLocations, textColors, fontSizes) => {
-    if(texts){
-        return(
-            texts.map((text, index) => (
-                <Rnd key={index}
-                bounds="parent"
-                enableResizing="false"
-                default={{
-                    x:textLocations[index][0]?textLocations[index][0]:0,
-                    y:textLocations[index][1]?textLocations[index][1]:0,
-                }}
-                onClick =  {
-                    () => {}
-                }
-                onDragStop = {
-                    (e,d) => {
-                         textLocations[index][0] = parseInt(d.x)
-                         textLocations[index][1] = parseInt(d.y)
-                    }
-                }
-                style={{
-                textAlign: 'center',
-                color: textColors[index],
-                fontSize: fontSizes[index]}}>{text}</Rnd>
-            ))
-        )
-    }
-}
-const genImages = (images, imageLocations, imageDimensions) => {
-    if(images){
-        return(
-            images.map((image, index) => (
-                <Rnd key={index}
-                bounds="parent"
-                default={{
-                    x:imageLocations[index][0],
-                    y:imageLocations[index][1],
-                }}
-                onClick =  {
-                    () => {}
-                }
-                onDragStop = {
-                    (e,d) => {
-                         imageLocations[index][0] = parseInt(d.x)
-                         imageLocations[index][1] = parseInt(d.y)
-                    }
-                }
-                enableResizing="false"
-                style={{
-                textAlign: 'center'}}><img width={imageDimensions[index][0]} height={imageDimensions[index][1]}  draggable="false" src={images[index]} alt="img"></img></Rnd>
-            ))
-        )
-    }
-}
 class EditLogoScreen extends Component {
 
     constructor(props){
@@ -130,6 +76,7 @@ class EditLogoScreen extends Component {
             fontSizes: "",
             images: "",
             imageLocations: "",
+            imageDimensions: "",
             backgroundColor: "",
             borderColor: "",
             borderRadius: "",
@@ -144,16 +91,22 @@ class EditLogoScreen extends Component {
             size: "",
             colorChange: false,
             color: "",
+            urlChange: false,
+            url: "",
+            imgWidthChange: false,
+            imgWidth:"",
+            imgHeightChange: false,
+            imgHeight:"",
         }
     }
 
     genTextList = (list, fontSizes, fontColor,textLocations) => {
         return( 
+            <div>
             <ul className="list-group overflow-auto" style={{maxHeight: 150 + 'px'}}>
                 {list.map((x, index) =>(
                     <li key={index} className="list-group-item">{x}
                         <Modal className="col-6" actions={[<Button flat modal="close" node="button" waves="red" onClick={()=>{
-                                console.log(this.state.text);
                                 if(this.state.textChange){
                                     let texts=this.state.texts?this.state.texts:list
                                     texts[index]=this.state.text;
@@ -166,11 +119,21 @@ class EditLogoScreen extends Component {
                                     let color = this.state.textColors?this.state.textColors:fontColor;
                                     color[index] = this.state.color;
                                 }
-                                // let location = this.state.textLocations?this.state.textLocations:textLocations
-                                // location.push([0,0])
-                                this.setState({textChange:false})
+                                this.setState({textChange:false, sizeChange:false, colorChange:false})
                             }}>Change</Button>,
-                                        <Button flat modal="close" node="button" waves="green">Close</Button>]}
+                                        <Button flat modal="close" node="button" waves="green">Close</Button>,
+                                        <Button flat modal="close" node="button" onClick={()=>{
+                                            let texts=this.state.texts?this.state.texts:list;
+                                            texts.splice(index,1)
+                                            let sizes=this.state.fontSizes?this.state.fontSizes:fontSizes;
+                                            sizes.splice(index,1)
+                                            let color = this.state.textColors?this.state.textColors:fontColor;
+                                            color.splice(index,1)
+                                            let location = this.state.textLocations?this.state.textLocations:textLocations;
+                                            location.splice(index,1)
+                                            this.setState({textChange:false});
+                                            console.log(texts, sizes, color, location)
+                                        }}>&#128465;</Button>]}
                             trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Edit</button>}>
                             <div className="modal-content">
                                 <h4>Edit Text</h4>
@@ -190,17 +153,191 @@ class EditLogoScreen extends Component {
                     </li>
                 ))}
             </ul>
+            <Modal className="col-6" actions={[<Button flat modal="close" node="button" waves="red" onClick={()=>{
+                    let texts=this.state.texts?this.state.texts:list
+                    if(this.state.textChange){
+                        texts.push(this.state.text);
+                    }else{
+                        texts.push("GoLogoLo")
+                    }
+                    let sizes=this.state.fontSizes?this.state.fontSizes:fontSizes;
+                    if(this.state.sizeChange){
+                        sizes.push(parseInt(this.state.size));
+                    }else{
+                        sizes.push(20);
+                    }
+                    let color = this.state.textColors?this.state.textColors:fontColor;
+                    if(this.state.colorChange){
+                        color.push(this.state.color);
+                    }else{
+                        color.push("#111111")
+                    }
+                    let location = this.state.textLocations?this.state.textLocations:textLocations
+                    location.push([0,0])
+                    this.setState({textChange:false, sizeChange:false, colorChange:false})
+                }}>Add</Button>,
+                            <Button flat modal="close" node="button" waves="green">Close</Button>]}
+                trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Add Text</button>}>
+                <div className="modal-content">
+                    <h4>Add Text</h4>
+                    <div className="form-group">
+                        <label htmlFor="text">Text:</label>
+                        <input type="text" className="form-control" onChange={(e)=>{this.setState({text:e.target.value,textChange:true})}} name="text" placeholder="GoLogoLo" defaultValue="GoLogoLo" />
+                        <label htmlFor="fontSize">Font Size:</label>
+                        <input type="number" min = "5" max="100" className="form-control" onChange={(e)=>{this.setState({size:e.target.value,sizeChange:true})}} name="fontSize" placeholder="20" defaultValue="20" />
+                        <label htmlFor="fontColor">Font Color:</label>
+                        <input type="color" className="form-control" name="fontColor" onChange={(e)=>{this.setState({color:e.target.value,colorChange:true})}} placeholder="#111111" defaultValue="#111111" />
+                    </div>
+                </div>
+                <div className="modal-footer">
+                    <span className="red-text"></span>
+                </div>
+            </Modal>
+        </div>
             )
     }
-    genImageList = (list) =>{
+    genImageList = (list, dimensions, locations) =>{
         return( 
-            <ul className="list-group overflow-auto" style={{maxHeight: 150 + 'px'}}>
-                {list.map((x, index) =>(
-                    <li key={index} className="list-group-item"><img src={x} width="25" height="25" alt="Error"></img></li>
-                ))}
-            </ul>)
+            <div>
+                <ul className="list-group overflow-auto" style={{maxHeight: 150 + 'px'}}>
+                    {list.map((x, index) =>(
+                        <li key={index} className="list-group-item"><img src={x} width="25" height="25" alt="Error"></img>
+                        <Modal className="col-6" actions={[<Button flat modal="close" node="button" waves="red" onClick={()=>{
+                            if(this.state.urlChange){
+                                let imgs=this.state.images?this.state.images:list
+                                imgs[index]=this.state.url;
+                            }
+                            let dimes=this.state.imageDimensions?this.state.imageDimensions:dimensions;
+                            if(this.state.imgWidthChange){
+                                dimes[index][0]=parseInt(this.state.imgWidth);
+                            }
+                            if(this.state.imgHeightChange){
+                                dimes[index][1]=parseInt(this.state.imgHeight);
+                            }
+                            console.log(dimes)
+                            this.setState({urlChange:false, imgWidthChange:false, imgHeightChange:false})
+                        }}>Change</Button>,
+                                    <Button flat modal="close" node="button" waves="green">Close</Button>,
+                                    <Button flat modal="close" node="button" onClick={()=>{
+                                        
+                                    }}>&#128465;</Button>]}
+                        trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Edit</button>}>
+                        <div className="modal-content">
+                            <h4>Edit Image</h4>
+                            <div className="form-group">
+                                <label htmlFor="url">URL:</label>
+                                <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url" placeholder={x} defaultValue={x} />
+                                <label htmlFor="imgWidth">Width:</label>
+                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgWidth:e.target.value, imgWidthChange:true})}} name="imgWidth" placeholder={dimensions[index][0]} defaultValue={dimensions[index][0]} />
+                                <label htmlFor="imgHeight">Height:</label>
+                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgHeight:e.target.value, imgHeightChange:true})}} name="imgHeight" placeholder={dimensions[index][1]} defaultValue={dimensions[index][1]} />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <span className="red-text"></span>
+                        </div>
+                    </Modal></li>
+                    ))}
+                </ul>
+                <Modal className="col-6" actions={[<Button flat modal="close" node="button" waves="red" onClick={()=>{
+                    let imgs=this.state.images?this.state.images:list
+                    if(this.state.urlChange){
+                        imgs.push(this.state.url);
+                    }else{
+                        return
+                    }
+                    let dimes=this.state.imageDimensions?this.state.imageDimensions:dimensions;
+                    let values = [0,0]
+                    if(this.state.imgWidthChange){
+                        values[0] = this.state.imgWidth
+                    }else{
+                        values[0] = 100
+                    }
+                    if(this.state.imgHeightChange){
+                        values[1] = this.state.imgHeight
+                    }else{
+                        values[1] = 100
+                    }
+                    dimes.push(values)
+                    let location = this.state.imageLocations?this.state.imageLocations:locations
+                    location.push([0,0])
+                    this.setState({urlChange:false, imgWidthChange:false, imgHeightChange:false})
+                    console.log(imgs, dimes, location)
+                }}>Change</Button>,
+                            <Button flat modal="close" node="button" waves="green">Close</Button>]}
+                trigger={<button className="waves-effect waves-light btn-small" style={{float:"right"}}>Add Image</button>}>
+                <div className="modal-content">
+                    <h4>Edit Text</h4>
+                    <div className="form-group">
+                    <label htmlFor="url">URL:</label>
+                                <input type="text" className="form-control" onChange={(e)=>{this.setState({url:e.target.value, urlChange:true})}} name="url"/>
+                                <label htmlFor="imgWidth">Width:</label>
+                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgWidth:e.target.value, imgWidthChange:true})}} name="imgWidth" defaultValue="100" />
+                                <label htmlFor="imgHeight">Height:</label>
+                                <input type="number" className="form-control" max="500" min="10" onChange={(e)=>{this.setState({imgHeight:e.target.value, imgHeightChange:true})}} name="imgHeight" defaultValue="100" />
+                    </div>
+                </div>
+                <div className="modal-footer">
+                    <span className="red-text"></span>
+                </div>
+            </Modal>
+            </div>)
     }
 
+    genText = (texts, textLocations, textColors, fontSizes) => {
+        if(texts){
+            return(
+                texts.map((text, index) => (
+                    <Rnd key={index}
+                    bounds="parent"
+                    enableResizing="false"
+                    default={{
+                        x:textLocations[index][0]?textLocations[index][0]:0,
+                        y:textLocations[index][1]?textLocations[index][1]:0,
+                    }}
+                    onClick =  {
+                        () => {}
+                    }
+                    onDragStop = {
+                        (e,d) => {
+                             textLocations[index][0] = parseInt(d.x)
+                             textLocations[index][1] = parseInt(d.y)
+                        }
+                    }
+                    style={{
+                    textAlign: 'center',
+                    color: textColors[index],
+                    fontSize: fontSizes[index]}}>{text}</Rnd>
+                ))
+            )
+        }
+    }
+    genImages = (images, imageLocations, imageDimensions) => {
+        if(images){
+            return(
+                images.map((image, index) => (
+                    <Rnd key={index}
+                    bounds="parent"
+                    default={{
+                        x:imageLocations[index][0],
+                        y:imageLocations[index][1],
+                    }}
+                    onClick =  {
+                        () => {}
+                    }
+                    onDragStop = {
+                        (e,d) => {
+                             imageLocations[index][0] = parseInt(d.x)
+                             imageLocations[index][1] = parseInt(d.y)
+                        }
+                    }
+                    enableResizing="false"
+                    style={{
+                    textAlign: 'center'}}><img width={imageDimensions[index][0]} height={imageDimensions[index][1]}  draggable="false" src={images[index]} alt="img"></img></Rnd>
+                ))
+            )
+        }
+    }
     render() {
         let texts, textLocations, textColors, fontSizes, images, imageLocations, backgroundColor, borderColor, borderRadius, borderWidth, location, width, height;
         return (
@@ -258,7 +395,7 @@ class EditLogoScreen extends Component {
                                                 </div>
                                                 <div className="form-group col-10">
                                                     <label htmlFor="images">Images:</label>
-                                                    <div>{this.genImageList(data.logo.images)}</div>                                                
+                                                    <div>{this.genImageList(data.logo.images, data.logo.imageDimensions, data.logo.imageLocations)}</div>                                                
                                                 </div>
                                                 <div className="form-group col-10">
                                                     <label htmlFor="backgroundColor">Background Color:</label>
@@ -311,8 +448,8 @@ class EditLogoScreen extends Component {
                                                     padding: (this.state.padding ? this.state.padding : data.logo.padding) + "px",
                                                     width: (this.state.width? this.state.width : data.logo.dimensions[0]),
                                                     height: (this.state.height? this.state.height : data.logo.dimensions[1])
-                                                }}>{genText(this.state.texts?this.state.texts:data.logo.texts, this.state.textLocations?this.state.textLocations:data.logo.textLocations, this.state.textColors?this.state.textColors:data.logo.textColors, this.state.fontSizes?this.state.fontSizes:data.logo.fontSizes)}
-                                                {genImages(data.logo.images, data.logo.imageLocations, data.logo.imageDimensions)}</div>
+                                                }}>{this.genText(this.state.texts?this.state.texts:data.logo.texts, this.state.textLocations?this.state.textLocations:data.logo.textLocations, this.state.textColors?this.state.textColors:data.logo.textColors, this.state.fontSizes?this.state.fontSizes:data.logo.fontSizes)}
+                                                {this.genImages(this.state.images?this.state.images:data.logo.images, this.state.imageLocations?this.state.imageLocations:data.logo.imageLocations, this.state.imageDimensions?this.state.imageDimensions:data.logo.imageDimensions)}</div>
                                             </div>
                                             {loading && <p>Loading...</p>}
                                             {error && <p>Error :( Please try again</p>}
