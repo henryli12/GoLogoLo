@@ -106,11 +106,14 @@ class ViewLogoScreen extends Component {
         }
     }
     handleExport = () => {
-        html2canvas(document.querySelector("#capture")).then(canvas => {
+        html2canvas(document.querySelector("#capture"),{
+            proxy: "https://github.com/niklasvh/html2canvas-proxy-nodejs",
+            useCORS: true
+            }).then(canvas => {
             let uri = canvas.toDataURL()
             let link = document.createElement('a');
             link.href = uri
-            link.download = "idk.png"
+            link.download = this.state.name
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
@@ -122,6 +125,9 @@ class ViewLogoScreen extends Component {
                 {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
+                    if(!this.state.name){
+                        this.setState({name:data.logo.texts.join("_")})
+                    }
                     return (
                         <div className="container">
                             <div className="panel panel-default">

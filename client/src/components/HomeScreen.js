@@ -45,8 +45,7 @@ class HomeScreen extends Component {
                                 ))}
                             </div>
                             <div className="col s8">
-                                <div id="home_banner_container">
-                                    @todo<br />
+                                <div id="home_banner_container" style={{height:"200px"}}>
                                     GoLogoLo
                                 </div>
                                 <div>

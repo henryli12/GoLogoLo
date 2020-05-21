@@ -1,17 +1,21 @@
-## Some useful queries for GraphiQL
+## There are the updated queries for GraphiQL
 
 Get all information about all logos:
 
-    query getAllLogos{
-        logos{
+    query{
+        logos {
             _id
-            text
-            color
-            fontSize
+            texts
+            textLocations
+            textColors
+            fontSizes
+            images
+            imageLocations
+            imageDimensions
             backgroundColor
             borderColor
-            borderWidth
             borderRadius
+            borderWidth
             padding
             margin
             lastUpdate
@@ -20,16 +24,21 @@ Get all information about all logos:
 
 Get one logo using its ID:
 
-    query getOneLogoById{
-        logo(id:"----INSERT ID HERE----"){
+    query{
+        logo(id: "----ID OF LOGO----") {
             _id
-            text
-            color
-            fontSize
+            texts
+            textLocations
+            textColors
+            fontSizes
+            images
+            imageLocations
+            imageDimensions
             backgroundColor
             borderColor
             borderWidth
             borderRadius
+            dimensions
             padding
             margin
             lastUpdate
@@ -38,71 +47,58 @@ Get one logo using its ID:
 
 Create a new logo:
 
-    mutation AddLogo{
+    mutation{
         addLogo(
-            text: "New Logo",
-            color: "#000000",
-            fontSize: 12,
-            backgroundColor: "#FFFFFF",
-            borderColor: "#000000",
-            borderWidth: 12,
-            borderRadius: 12,
-            padding: 12,
-            margin: 12) {
-            _id
+            texts: ["GoLogoLo"],
+            textLocations: [[150,100]],
+            textColors: ["#FF1211"],
+            fontSizes: [40],
+            images: ["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png"],
+            imageLocations: [[200,200]],
+            imageDimensions: [[100,100]],
+            backgroundColor: "#22ffff",
+            borderColor: "#0000ff",
+            borderRadius: 30,
+            borderWidth: 10,
+            dimensions: [500,500],
+            padding: 10,
+            margin:20
+        ){
+            lastUpdate
         }
     }
 
 Edit an existing logo:
 
-    mutation updateLogo{
-            updateLogo(
-                id: "----ID OF LOGO TO UPDATE----",
-                text: "NEW TEXT",
-                color: "#000000",
-                fontSize: 12,
-                backgroundColor: "#FFFFFF",
-                borderColor: "#000000",
-                borderWidth: 12,
-                borderRadius: 12,
-                padding: 12,
-                margin: 12) {
-                    lastUpdate
-            }
-    }
-
-Get all logos with a text:
-
-    {
-        getLogoByText(text: "----LOGO TEXT FRAGMENT----"){
-            _id
-            text
-            color
-            fontSize
-            backgroundColor
-            borderColor
-            borderWidth
-            borderRadius
-            padding
-            margin
+    mutation{
+        updateLogo(
+            id: "----ID OF LOGO TO UPDATE----",
+            texts: ["GoLogoLo","NEW"],
+            textLocations: [[150,100],[180,350]],
+            textColors: ["#FF1211", "#ffffff"],
+            fontSizes: [40,50],
+            images: ["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png"],
+            imageLocations: [[200,200]],
+            imageDimensions: [[100,100]],
+            backgroundColor: "#22ffff",
+            borderColor: "#0000ff",
+            borderRadius: 30,
+            borderWidth: 10,
+            dimensions: [500,500],
+            padding: 10,
+            margin:20
+        ){
             lastUpdate
         }
     }
 
-Get a logos with a text that contains:
 
-    {
-        getLogosByTextContains(text: "----LOGO TEXT FRAGMENT----"){
-            _id
-            text
-            color
-            fontSize
-            backgroundColor
-            borderColor
-            borderWidth
-            borderRadius
-            padding
-            margin
+Remove an existing logo:
+
+    mutation{
+        removeLogo(
+            id: "----ID OF LOGO TO REMOVE----"
+        ){
             lastUpdate
         }
     }
