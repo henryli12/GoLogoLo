@@ -10,7 +10,7 @@ A web appilcation that allows you to create simple logos.
 
 ## Used
 
-* Express
+* Express.js
 * MongoDB
 * React.js
 * Materialize
