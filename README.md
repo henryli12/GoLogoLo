@@ -4,9 +4,9 @@ A web appilcation that allows you to create simple logos.
 
 ## Application
 
-![View_page](Images/view_screen.jpg)
+<img alt="add logo" src="Images/add_logo.gif"></img>
 
-![Edit_page](Images/edit.jpg)
+<img alt="edit logo" src="Images/edit.gif"></img>
 
 ## Used
 
